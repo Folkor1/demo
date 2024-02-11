@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'about',
     'booking',
     'adminpanel',
+    'services',
     'django_filters',
     'cloudinary',
     'crispy_forms',

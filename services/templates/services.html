@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'services/css/services.css' %}">
+  <link rel="stylesheet" href="{% static 'adminpanel/css/adminpanel.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- Page header -->
+<div class="container ms-5 mt-4 position-absolute start-0">
+    <div class="row row-cols-auto ms-3">
+      <div class="col">
+        <i class="fa-solid fa-gears fs-1" style="color: #7E57C2"></i>
+      </div>
+      <div class="col fs-2 ps-0 text-secondary">
+        Services
+      </div>
+    </div>
+</div>
+
+<div class="container admin-stats" style="margin-left: -200px;" id="user-table">
+    <div style="width: 15rem;">
+        <div class="card">
+            <div class="card-body rounded-2 pt-2 ps-2 small">
+              <i class="fa-solid fa-gear"></i><span class="ms-1 text-secondary">Bookings expiry service</span>
+            </div>
+            <div class="text-center small text-secondary">
+              <div class="ps-2">Service | 
+                  {% if 'unset' in threading and counter != 0 %}
+                    <span class="text-success"><i class="fa-solid fa-repeat"></i> Running</span> {% else %} <span class="text-danger"> <i class="fa-solid fa-ban"></i> Stopped</span>
+                  {% endif %}
+              </div>
+              <div class="text-center text-secondary mt-2 me-4 mb-3">
+                {% if 'unset' in threading and counter != 0 %}
+                  Next execution in:
+                  <span class="text-center countdown text-dark position-absolute ps-1" data="{{ time_remaining }}" id="expiry_timer"></span>
+                  <progress value="0" max="300" id="pbar" style="accent-color: #31708F; width: 142px; margin-left: 32px;"></progress>
+                {% endif %}
+              </div>
+              <form method="POST" class="float-end pb-1 pe-2">
+                  {% csrf_token %}
+                  <button type="submit" name="run_expiry" class="border-0 bg-transparent submit-btn">Run</button>
+                  <button type="submit" name="stop_expiry" class="border-0 bg-transparent submit-btn">Stop</button>
+              </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container admin-stats mt-3" style="margin-left: -200px;">
+  <div style="width: 15rem;">
+      <div class="card">
+          <div class="card-body rounded-2 pt-2 ps-2 small">
+            <i class="fa-solid fa-gear"></i><span class="ms-1 text-secondary">Flag duplicates service</span>
+          </div>
+          <div class="text-center small text-secondary">
+            <div class="ps-2">Service | 
+              {% if 'unset' in stop_dupes and threads_counter_dupes != 0 %}
+                <span class="text-success"><i class="fa-solid fa-repeat"></i> Running</span> {% else %} <span class="text-danger"> <i class="fa-solid fa-ban"></i> Stopped</span>
+              {% endif %}
+            </div>
+            <div class="text-center text-secondary mt-2 me-4 mb-3">
+              {% if 'unset' in stop_dupes and threads_counter_dupes != 0 %}
+                Next execution in:
+                <span class="text-center countdown-dupes text-dark position-absolute ps-1" data="{{ time_remaining_dupes }}" id="expiry_timer_dupes"></span>
+                <progress value="0" max="600" id="pbar_dupes" style="accent-color: #31708F; width: 142px; margin-left: 32px;"></progress>
+              {% endif %}
+            </div>
+            <form method="POST" class="float-end pb-1 pe-2">
+                {% csrf_token %}
+                <button type="submit" name="run_dupes" class="border-0 bg-transparent submit-btn">Run</button>
+                <button type="submit" name="stop_dupes" class="border-0 bg-transparent submit-btn">Stop</button>
+            </form>
+          </div>
+      </div>
+  </div>
+</div>
+
+<!-- Back button -->
+<div class="d-flex justify-content-center mt-5 mb-5">
+  <div class="btn text-center mt-5 back-button" id="back-button-admin-users"><i class="fa-solid fa-arrow-left fa-fw"></i><a class="text-reset text-decoration-none back-button" href="{% url 'adminpanel:admin_panel' %}">Back to Admin panel</a></div>
+</div>
+
+{%endblock%}
