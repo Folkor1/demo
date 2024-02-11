@@ -60,7 +60,7 @@
             <td>{{ user.last_login }}</td>
             <td class="admin-stats">
               <span name="status" class="badge {% if user.is_active == True %} bg-success-subtle text-success-emphasis {% else %} bg-warning-subtle text-warning-emphasis {% endif %}">
-                {% if user.is_active == True %} Active {% else %} Pending {% endif %}
+                {% if user.is_active == True %} Approved {% else %} Pending {% endif %}
               </span>
             </td>         
           </tr>
