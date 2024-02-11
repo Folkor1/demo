@@ -130,6 +130,7 @@ class AdminReviewView(generic.ListView):
                 [Bookings.objects.filter(id=id).update(confirmed='Confirmed', 
                             notes=Bookings.objects.get(id=id).notes + \
                             timezone.now().strftime("%d %B %Y, %I:%M %p").replace("AM", "a.m.").replace("PM", "p.m.") + \
+                            "," + \
                             " Confirmed,") for id in review_ids_list]
                 messages.success(request, 'Lesson(s) confirmed.')
                 return HttpResponseRedirect(reverse('admin_review:admin_review'))
@@ -139,6 +140,7 @@ class AdminReviewView(generic.ListView):
                 [Bookings.objects.filter(id=id).update(confirmed='Pending', 
                             notes=Bookings.objects.get(id=id).notes + \
                             timezone.now().strftime("%d %B %Y, %I:%M %p").replace("AM", "a.m.").replace("PM", "p.m.") + \
+                            "," + \
                             " Pending,") for id in review_ids_list]
                 messages.success(request, 'Lesson(s) set to pending.')
                 return HttpResponseRedirect(reverse('admin_review:admin_review'))
@@ -148,6 +150,7 @@ class AdminReviewView(generic.ListView):
                 [Bookings.objects.filter(id=id).update(confirmed='Cancelled', 
                             notes=Bookings.objects.get(id=id).notes + \
                             timezone.now().strftime("%d %B %Y, %I:%M %p").replace("AM", "a.m.").replace("PM", "p.m.") + \
+                            "," + \
                             " Cancelled,") for id in review_ids_list]
                 messages.success(request, 'Lesson(s) cancelled.')
                 return HttpResponseRedirect(reverse('admin_review:admin_review'))
@@ -300,6 +303,7 @@ class AdminFinalizeView(generic.ListView):
                 [Bookings.objects.filter(id=id).update(finalized='Discarded', 
                             notes=Bookings.objects.get(id=id).notes + \
                             timezone.now().strftime("%d %B %Y, %I:%M %p").replace("AM", "a.m.").replace("PM", "p.m.") + \
+                            "," + \
                             " Discarded,", comms=request.POST.get('comms') + \
                             "\n" + \
                             "<" + \
