@@ -29,10 +29,11 @@ def services(request):
     time_remaining = datetime.timedelta(seconds = time_remaining_sec)
     time_remaining_dupes_sec = 600 - (time.time() - timer_dupes)
     time_remaining_dupes = datetime.timedelta(seconds = time_remaining_dupes_sec)
-
+    event_thread = threading.Thread(target=expired)
+    event_thread_dupes = threading.Thread(target=duplicates)
+    
     if request.method == 'POST':
         if 'run_expiry' in request.POST:
-            event_thread = threading.Thread(target=expired)
             stop_event.clear()
             event_thread.start()
             return HttpResponseRedirect(request.path_info)
@@ -40,7 +41,6 @@ def services(request):
             stop_event.set()
             return HttpResponseRedirect(request.path_info)
         if 'run_dupes' in request.POST:
-            event_thread_dupes = threading.Thread(target=duplicates)
             stop_dupes.clear()
             event_thread_dupes.start()
             return HttpResponseRedirect(request.path_info)
@@ -48,11 +48,11 @@ def services(request):
             stop_dupes.set()
             return HttpResponseRedirect(request.path_info)
     context = {
-        'threading': str(stop_event),
+        'threading': stop_event.is_set(),
         'counter': threads_counter,
         'time_remaining': str(time_remaining)[3:7],
         'time_remaining_sec': time_remaining_sec,
-        'stop_dupes': str(stop_dupes),
+        'stop_dupes': stop_dupes.is_set(),
         'threads_counter_dupes': threads_counter_dupes,
         'time_remaining_dupes': str(time_remaining_dupes)[2:7],
         'time_remaining_dupes_sec': time_remaining_dupes_sec

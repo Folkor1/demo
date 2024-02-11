@@ -2,7 +2,6 @@
 {% load static %}
 
 {% block extra_css %}
-  <link rel="stylesheet" href="{% static 'services/css/services.css' %}">
   <link rel="stylesheet" href="{% static 'adminpanel/css/adminpanel.css' %}">
 {% endblock %}
 
@@ -28,12 +27,12 @@
             </div>
             <div class="text-center small text-secondary">
               <div class="ps-2">Service | 
-                  {% if 'unset' in threading and counter != 0 %}
+                  {% if threading == False and counter != 0 %}
                     <span class="text-success"><i class="fa-solid fa-repeat"></i> Running</span> {% else %} <span class="text-danger"> <i class="fa-solid fa-ban"></i> Stopped</span>
                   {% endif %}
               </div>
               <div class="text-center text-secondary mt-2 me-4 mb-3">
-                {% if 'unset' in threading and counter != 0 %}
+                {% if threading == False and counter != 0 %}
                   Next execution in:
                   <span class="text-center countdown text-dark position-absolute ps-1" data="{{ time_remaining }}" id="expiry_timer"></span>
                   <progress value="0" max="300" id="pbar" style="accent-color: #31708F; width: 142px; margin-left: 32px;"></progress>
@@ -57,12 +56,12 @@
           </div>
           <div class="text-center small text-secondary">
             <div class="ps-2">Service | 
-              {% if 'unset' in stop_dupes and threads_counter_dupes != 0 %}
+              {% if stop_dupes == False and threads_counter_dupes != 0 %}
                 <span class="text-success"><i class="fa-solid fa-repeat"></i> Running</span> {% else %} <span class="text-danger"> <i class="fa-solid fa-ban"></i> Stopped</span>
               {% endif %}
             </div>
             <div class="text-center text-secondary mt-2 me-4 mb-3">
-              {% if 'unset' in stop_dupes and threads_counter_dupes != 0 %}
+              {% if stop_dupes == False and threads_counter_dupes != 0 %}
                 Next execution in:
                 <span class="text-center countdown-dupes text-dark position-absolute ps-1" data="{{ time_remaining_dupes }}" id="expiry_timer_dupes"></span>
                 <progress value="0" max="600" id="pbar_dupes" style="accent-color: #31708F; width: 142px; margin-left: 32px;"></progress>
