@@ -1,0 +1,196 @@
+{% load static %}
+{% url 'homepage:homepage' as homepage %}
+{% url 'account_login' as account_login %}
+{% url 'account_signup' as account_signup %}
+{% url 'account_logout' as account_logout %}
+{% url 'bookings' as bookings %}
+{% url 'adminpanel:admin_panel' as admin_panel %}
+{% url 'about:about' as about %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/086f06e449.js" crossorigin="anonymous"></script>
+    <link rel="shortcut icon" href="#">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300&family=Merriweather+Sans&display=swap" rel="stylesheet">
+    <title>Piano Booking</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-datepicker3.min.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+
+    {% block extra_css %}
+    {% endblock %}
+
+  </head>
+  <body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg" style="background-color: #1c1b1a;">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'homepage:homepage' %}"><img src="{% static 'images/logo.JPG' %}" alt ='Logo Pic' id="navbar-logo"></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                  <a class="nav-link {% if request.path == homepage %} active {% endif %}" aria-current="page" href="{% url 'homepage:homepage' %}">HOME</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link {% if request.path == about %} active {% endif %}" aria-current="page" href="{% url 'about:about' %}">ABOUT</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link {% if request.path == bookings %} active {% endif %}" aria-current="page" href="{% url 'bookings' %}">BOOKINGS</a>
+                </li>
+                {% if user.is_superuser %}
+                  <li class="nav-item">
+                    <a class="nav-link {% if request.path == admin_panel %} active {% endif %}" aria-current="page" href="{% url 'adminpanel:admin_panel' %}">ADMIN</a>
+                  </li>
+                {% endif %}
+                {% if user.is_authenticated %}
+                  <li class="nav-item">
+                    <a class="nav-link {% if request.path == account_logout %} active {% endif %}" aria-current="page" href="{% url 'account_logout' %}">LOGOUT</a>
+                  </li>
+                {% else %}
+                <li class="nav-item">
+                  <a class="nav-link {% if request.path == account_signup %} active {% endif %}" aria-current="page" href="{% url 'account_signup' %}">SIGN UP</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link {% if request.path == account_login %} active {% endif %}" aria-current="page" href="{% url 'account_login' %}">LOGIN</a>
+                </li>
+                  {% endif %}
+              </ul>
+            </div>
+        </div>
+    </nav>
+
+    {% if user.is_authenticated %}
+      <div class="row position-absolute top-0 end-0 text-info mt-3 me-3 w-auto h6" id="logged-as">
+        <p class="w-auto p-0">Logged in as&nbsp;</p> 
+        <p class="w-auto p-0">
+          {{ user.username }}
+        </p>
+      </div>
+    {% endif %}
+
+    <!-- Alert messages -->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 offset-md-2 d-flex justify-content-center">
+                {% for message in messages %}
+                  {% with message.level as level %}
+                    {% if level == 25 %}
+                      <div class="alert {{ message.tags }} alert-dismissible fade show mt-2 mb-0 bg-success-subtle position-absolute" role="alert">
+                      <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
+                          {{ message | safe }}
+                          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> 
+                      </div>
+                    {% elif level == 30 %}
+                      <div class="alert {{ message.tags }} alert-dismissible fade show bg-warning-subtle mt-2 mb-0 position-absolute" role="alert">
+                      <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#check-circle-fill"/></svg>
+                            {{ message | safe }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> 
+                      </div>
+                    {% elif level == 40 %}
+                      <div class="alert {{ message.tags }} alert-dismissible fade show bg-danger-subtle mt-2 mb-0 position-absolute" role="alert">
+                      <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>                    
+                          {{ message | safe }}
+                          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                      </div>
+                    {% endif %}
+                  {% endwith %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <main class="container">
+        {% block content %}
+    
+        {% endblock content %}
+    </main>
+
+
+
+    <!-- Footer -->
+    <footer class="text-center text-white" style="background-color: #1c1b1a;">
+        <!-- Grid container -->
+        <div class="container p-4 pb-0">
+            <!-- Section: Social media -->
+            <div class="mb-4">
+            <!-- Facebook -->
+            <a class="btn btn-outline-light btn-floating m-1" href="https://facebook.com" target="_blank" role="button"><i class="fab fa-facebook-f"></i></a>
+        
+            <!-- Twitter -->
+            <a class="btn btn-outline-light btn-floating m-1" href="https://twitter.com" target="_blank" role="button"><i class="fab fa-twitter"></i></a>
+        
+            <!-- Google -->
+            <a class="btn btn-outline-light btn-floating m-1" href="https://google.com" target="_blank" role="button"><i class="fab fa-google"></i></a>
+        
+            <!-- Instagram -->
+            <a class="btn btn-outline-light btn-floating m-1" href="https://instagram.com" target="_blank" role="button"><i class="fab fa-instagram"></i></a>
+        
+            <!-- Linkedin -->
+            <a class="btn btn-outline-light btn-floating m-1" href="https://linkedin.com" target="_blank" role="button"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+        </div>
+        </footer>
+
+    <!-- SVG images -->
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+        <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+        </symbol>
+        <symbol id="info-fill" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+        </symbol>
+        <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+        </symbol>
+    </svg>
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="{% static 'script/script.js' %}"></script>
+    <script src="{% static 'script/bootstrap-datepicker.min.js' %}"></script>
+    <script>
+        $('#date').datepicker({
+          startDate: '+1d',
+          endDate: '+14d',
+          daysOfWeekDisabled: [0,6],
+          maxViewMode: 1,
+        });
+
+        $('#id_date').datepicker({
+          startDate: '+0d',
+          endDate: '+14d',
+          daysOfWeekDisabled: [0,6],
+          maxViewMode: 1,
+        });
+
+        $('#datepicker_archive, #datepicker_finalize').datepicker({
+          daysOfWeekDisabled: [0,6],
+        });
+
+        $('#datepicker_archive').on('changeDate', function(ev){
+          $(this).datepicker('hide');
+        });
+    </script>
+
+    {% block script %}
+      <script type="text/javascript" src="{% static 'services/js/services.js' %}"></script>
+      <script type="text/javascript" src="{% static 'adminpanel/js/admin_users.js' %}"></script>
+      <script type="text/javascript" src="{% static 'booking/js/booking.js' %}"></script>
+    {% endblock script %}
+
+  </body>
+</html>

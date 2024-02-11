@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+   <!-- Something went wrong message -->
+   <div class="mt-5 row row-cols-1 d-flex justify-content-center">
+        <div class="text-center">
+            <p class="h3 mt-5 text-center">
+                Sorry, something went wrong. Return to <a class="text-decoration-none text-info" aria-current="page" href="{% url 'homepage:homepage' %}">Home page</a>
+            </p>
+        </div>
+    </div>
+
+
+{%endblock%}

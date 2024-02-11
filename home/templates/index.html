@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<!-- Home page picture container -->
+<div id="pic-frame">
+    <div id="home-page-pic">
+        <img src = "{% static 'images/piano1.jpg' %}" alt ='Piano Pic' class = "img-fluid">
+    </div>
+</div>
+
+<!-- Contact information -->
+<div class="mt-4">
+    <h3>CONTACT INFORMATION</h3>
+    <ul class="list-group list-group-horizontal-xl mt-3">
+        <li class="contact-list"><i class="fa-solid fa-mobile-screen-button fa-lg me-2"></i>+353 085 87654321</li>
+        <li class="contact-list"><i class="fa-regular fa-envelope fa-lg me-2"></i>piano.email@school.com</li>
+        <li class="contact-list"><i class="fa-sharp fa-solid fa-location-dot fa-lg me-2"></i>
+            <a class="text-reset text-decoration-none" href="https://www.google.com/maps/@51.8929789,-8.4708304,17z" target="_blank">Location</a></li>
+    </ul>
+    <ul class="h5 p-0 mt-5 text-uppercase" id="home-text">
+        <li class="mb-3"><i class="fa-solid fa-check me-2"></i>Piano and Theory lessons for adults and children</li>
+        <li class="mb-3"><i class="fa-solid fa-check me-2"></i>Any skill level</li>
+        <li><i class="fa-solid fa-check me-2"></i>Casual and professional education</li>
+    </ul>
+</div>
+
+<!-- Location -->
+<div class="container mt-5">
+    <div class="row mb-5" id="location">
+      <div class="col-3" id="house-pic">
+        <img src = "{% static 'images/house2.jpg' %}" alt ='House Pic' class = "img-fluid">
+      </div>
+      <div class="col-3" id="schedule">
+        <h5 id="working-hours-heading" class="mb-4">Working hours:</h5>
+        <div class="list-group list-group-horizontal" id="working-days">
+          <ul class="p-0">
+            <li>Monday:</li>
+            <li>Tuesday:</li>
+            <li>Wednesday:</li>
+            <li>Thursday:</li>
+            <li>Friday:</li>
+          </ul>
+          <ul id="working-hours">
+            <li>10:00 - 17:00</li>
+            <li>10:00 - 16:00</li>
+            <li>10:00 - 16:00</li>
+            <li>10:00 - 16:00</li>
+            <li>10:00 - 15:00</li>
+          </ul>
+        </div>
+      <div class="ms-1 button-1200">
+        <button type="submit" class="badge bg-light text-dark border border-dark badge-hover w-75"><a class="text-reset text-decoration-none" href="{% url 'bookings' %}">Book a lesson</a></button>
+      </div>
+    </div>
+      <div class="col-5" id="map-image">
+        <a href="https://www.google.com/maps/@51.8929789,-8.4708304,17z" target="_blank"><img src = "{% static 'images/Map.JPG' %}" alt ='Map Pic' class="img-fluid border border-dark"></a>
+      </div>
+    </div>
+</div>
+
+<!-- Stamps image -->
+<div class="d-flex justify-content-center" id="stamps">
+    <div class="w-25 h-25">
+        <img src = "{% static 'images/certs2.jpg' %}" alt ='Certs Pic' class="img-fluid">
+    </div>
+</div>
+<p class="d-flex justify-content-center h6">For news and updates please visit our social media</p>
+
+{%endblock%}

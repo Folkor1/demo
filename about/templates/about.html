@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row mb-5">
+
+            <!-- About entries -->
+            
+                {% for about in about_list %}
+                    {% if forloop.counter|divisibleby:2 %}
+
+                        <div class="row col-12 mt-5">
+                            <div class="col-5 mt-5 img-div">
+                                <img class="card-img-top" alt="about image" src=" {{ about.image.url }}">
+                            </div>
+                            <div class="col-6 mt-5 text-about">
+                                <p class="h3 text-about">{{ about.title}}</p>
+                                <p class="h5 text-about">{{ about.text}}</p>
+                            </div>
+                        </div>
+
+                    {% else %}
+
+                        <div class="row col-12 mt-5">
+                            <div class="col-6 mt-5 text-about">
+                                <p class="h3 text-about">{{ about.title}}</p>
+                                <p class="h5 text-about">{{ about.text}}</p>
+                            </div>
+                            <div class="col-5 mt-5 img-div">
+                                <img class="card-img-top w-75" alt="about image" src=" {{ about.image.url }}">
+                            </div>
+                        </div>
+
+                    {% endif %}
+                {% endfor %}
+        </div>
+    </div>
+
+{%endblock%}
