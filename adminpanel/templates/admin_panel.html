@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+   <!-- Admin panel -->
+   <div class="container row mt-5 justify-content-center" id="admin-panel-parent">
+        <div class="text-center"  id="admin-panel-div">
+            <p class="h3 mt-5 text-center" id="admin-panel-p">
+                Admin panel
+            </p>
+        </div>
+        <div class="row col-10 justify-content-sm-center mt-3">
+            <div class="card me-2" style="width: 15rem;">
+                <div class="card-body rounded-2 pt-3 text-center">
+                    <i class="fa-solid fa-user fs-4 text-secondary"></i><span class="ms-1 fs-5 text-secondary">Users</span>
+                    <div class="text-center">
+                        <p class="card-text mt-3 small admin-stats px-3">Activate, inactivate or delete users.</p>
+                    </div>
+                </div>
+                <div class="text-center pb-1">
+                    <a href="/admin_users/" class="badge text-dark border border-dark-subtle fw-bold bg-light badge-hover px-3 text-center btn mb-2">Details</a>
+                </div>
+            </div>
+            <div class="card me-2" style="width: 15rem;">
+                <div class="card-body rounded-2 pt-3 text-center">
+                    <i class="fa-solid fa-list-check fs-4 text-success"></i><span class="ms-1 fs-5 text-secondary">Review</span>
+                    <div class="text-center">
+                        <p class="card-text mt-3 small admin-stats px-3">Confirm, cancel or set lessons to pending.</p>
+                    </div>
+                </div>
+                <div class="text-center pb-1">
+                    <a href="/admin_review/" class="badge text-dark border border-dark-subtle fw-bold bg-light badge-hover px-3 text-center btn mb-2">Details</a>
+                </div>
+            </div>
+            <div class="card me-2" style="width: 15rem;">
+                <div class="card-body rounded-2 pt-3 text-center">
+                    <i style="color: #E65100" class="fa-solid fa-coins fs-4"></i><span class="ms-1 fs-5 text-secondary">Finalize</span>
+                    <div class="text-center">
+                        <p class="card-text mt-3 small admin-stats px-3">Finalize or discard lessons.</p>
+                    </div>
+                </div>
+                <div class="text-center pb-1">
+                    <a href="/admin_finalize/" class="badge text-dark border border-dark-subtle fw-bold bg-light badge-hover px-3 text-center btn mb-2">Details</a>
+                </div>
+            </div>
+            <div class="card" style="width: 15rem;">
+                <div class="card-body rounded-2 pt-3 text-center">
+                    <i class="fa-solid fa-box-archive fs-4 text-warning"></i><span class="ms-1 fs-5 text-secondary">Archive</span>
+                    <div class="text-center">
+                        <p class="card-text mt-3 small admin-stats px-3">Search for finalized lessons.</p>
+                    </div>
+                </div>
+                <div class="text-center pb-1">
+                    <a href="/admin_archive/" class="badge text-dark border border-dark-subtle fw-bold bg-light badge-hover px-3 text-center btn mb-2">Details</a>
+                </div>
+            </div>
+            <div class="card mt-2 me-2 d-none" style="width: 15rem;">
+                <div class="card-body rounded-2 pt-3 text-center">
+                    <i class="fa-solid fa-chart-pie fs-4 text-danger"></i><span class="ms-1 fs-5 text-secondary">Charts</span>
+                    <div class="text-center">
+                        <p class="card-text mt-3 small admin-stats px-3">Flowcharts and diagrams.</p>
+                    </div>
+                </div>
+                <div class="text-center pb-1">
+                    <a href="/admin_charts/" class="badge text-dark border border-dark-subtle fw-bold bg-light badge-hover px-3 text-center btn mb-2">Details</a>
+                </div>
+            </div>
+            <div class="card mt-2" style="width: 15rem;">
+                <div class="card-body rounded-2 pt-3 text-center">
+                    <i class="fa-solid fa-gears fs-4" style="color: #7E57C2"></i><span class="ms-1 fs-5 text-secondary">Services</span>
+                    <div class="text-center">
+                        <p class="card-text mt-3 small admin-stats px-3">System management.</p>
+                    </div>
+                </div>
+                <div class="text-center pb-1">
+                    <a href="/services/" class="badge text-dark border border-dark-subtle fw-bold bg-light badge-hover px-3 text-center btn mb-2">Details</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{%endblock%}

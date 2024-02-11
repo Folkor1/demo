@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'adminpanel/css/adminpanel.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- Page header -->
+<div class="container ms-5 mt-4 position-absolute start-0">
+    <div class="row row-cols-auto ms-3">
+      <div class="col">
+        <i style="color: #E65100" class="fa-solid fa-coins fs-1 ms-2"></i>
+      </div>
+      <div class="col fs-2 ps-0 text-secondary">
+        Finalize
+      </div>
+    </div>
+</div>
+
+<!-- Lessons table -->
+<div class="container-fluid justify-content-between table-responsive" id="user-table" style="display: none">
+
+    <form method="GET" name="admin-review-form" class="text-center dropdown badge ps-0 mb-2 float-start">
+      {{ bookings_filter.form.confirmed }}
+      {{ bookings_filter.form.lesson_type }}
+      {{ bookings_filter.form.date }}
+    </form>
+  
+    <a href="/admin_finalize" class="badge btn bg-light text-dark rounded-2 badge-hover float-end btn-secondary text-decoration-none mt-3" id="review-clear-filters">Clear filters</a>
+  
+    <table class="table table-hover">
+      <thead class="table-light">
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">
+            <div class="form-check pt-1">
+              <input class="form-check-input" type="checkbox" id="review-check-all-boxes">
+            </div>
+          </th>
+          <th scope="col" class="text-start">Lesson</th>
+          <th scope="col" class="text-start">Date & Time</th>
+          <th scope="col" class="text-start">Name</th>
+          <th scope="col" class="text-start">Status</th>
+          <th scope="col" class="text-start">Finalize</th>
+        </tr>
+      </thead>
+  
+      <form method="POST" class="d-inline" id="admin-status-submit-form">
+        {% csrf_token %}
+        <input type="hidden" name="admin-fin-submit" id="admin-fin-submit" value="">
+        <input type="hidden" name="admin-fin-id" id="admin-fin-id" value="">
+  
+        {% for booking in bookings_filter.qs %}
+          <tbody>
+            <tr>
+              <th scope="row" class="get-value-by-js">{{ booking.id }}</th>
+              <th>
+                <div class="form-check mb-0">
+                  <input class="form-check-input check" type="checkbox" id="{{ forloop.counter }}-selected">
+                    <input type="hidden" label="{{ booking.id }}" name="review-get-id-by-js">
+                    <input type="hidden" label="{{ booking.finalized }}" name="review-get-status-by-js">
+                </div>
+              </th>
+              <td class="admin-stats">{{ booking.lesson }} {{ booking.lesson_type }}</td>
+              <td>{{ booking.date|date:"j" }} {{ booking.date|date:"F" }} {{ booking.date|date:"Y" }} - {{ booking.time }}</td>
+              <td>{{ booking.student }} {% if booking.student.first_name or booking.student.last_name %} - {{ booking.student.first_name }} {{ booking.student.last_name }} {% endif %}</td>
+              <td class="admin-stats">
+                <span>
+                    {% if booking.confirmed == 'Pending' %}
+                      <i class="fa-regular fa-clock text-warning"></i>
+                      <span class="small text-secondary"> Pending</span>
+                    {% elif booking.confirmed == 'Confirmed' %} 
+                      <i class="fa-regular fa-circle-check text-success"></i>
+                      <span class="small text-secondary"> Confirmed</span>
+                    {% else %}
+                      <i class="fa-regular fa-circle-xmark text-danger"></i>
+                      <span class="small text-secondary"> Cancelled</span>
+                    {% endif %}
+                  </span>
+              </td>
+              <td class="admin-stats">
+                <select id="pp-{{ forloop.counter }}" label="admin-status-dd-{{ forloop.counter }}" name="{{ booking.id }}" class="badge text-warning-emphasis bg-warning-subtle border-warning-subtle finalize-dropdown admin-status mt-0 p-0">
+                    <option>Not finalized </option>
+                    <option>Finalize</option>
+                    <option>Discard</option>
+                </select>
+                    <button type="submit" id="admin-status-dd-{{ forloop.counter }}" class="badge bg-light text-dark border-0 bg-transparent py-1 px-2 d-none position-absolute" data-toggle="tooltip" data-placement="top" title="Save"><i class="fs-6 fa-regular fa-paper-plane"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        {% endfor %}
+      </form>
+  
+    </table>
+    <button class="badge btn bg-light text-dark rounded-2 badge-hover float-start btn-secondary text-decoration-none me-2" id="fin-discard-modal" tabindex="-1">Discard</button>
+    <button class="badge btn bg-light text-dark rounded-2 badge-hover float-start btn-secondary text-decoration-none" id="fin-finalize-modal" tabindex="-1">Finalize</button>
+  </div>
+  
+  <!-- Back button -->
+  <div class="d-flex justify-content-center mt-5 mb-5">
+    <div class="btn text-center mt-5 back-button" id="back-button-admin-users" style="display: none"><i class="fa-solid fa-arrow-left fa-fw"></i><a class="text-reset text-decoration-none h6 back-button" href="{% url 'adminpanel:admin_panel' %}">Back to Admin panel</a></div>
+  </div>
+  
+  <!-- Spinner -->
+  <div class="container text-center spinner-div">
+    <div class="spinner-border text-warning" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <br>
+    <p class="fw-bold mt-1">Loading...</p>
+  </div>
+
+<!-- Finalize lessons confirmation -->
+<div class="modal fade mt-5" id="bulk-finalize-modal" aria-labelledby="editModalLabel" aria-hidden="true" tabindex="-1">
+    <form method="POST" class="d-flex justify-content-center">
+        {% csrf_token %}
+        <input type="hidden" class="bulk-confirm-input" name='bulk-finalize-user-id' id='bulk-finalize-user-id' value=''>
+        <div class="modal-dialog position-absolute bottom-50">
+            <div class="modal-content rounded-1">
+                <div class="modal-header">
+                    <h6 class="modal-title fw-bold" id="editModalLabel"><span class="badge bg-warning-subtle border border-warning-subtle text-warning-emphasis"><i class="fa-solid fa-triangle-exclamation me-2"></i>Confirm change</h6>
+                        <span class="me-1 text-reset text-decoration-none" data-bs-dismiss="modal"><a class="btn-close" href="/admin_finalize"></a></span>
+                </div>
+                <div class="modal-body mx-auto text-center">
+                    <p class="fs-6 mb-2 text-center fw-bold"></i>Finalize lesson(s)?</p>
+                    <i class="fa-solid fa-check text-success fs-2 mb-3"></i>
+                    <div class="admin-stats" id="activate-users-master-div">
+                      {{ finalize_form.as_table }}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <span role="button" class="badge bg-secondary badge-hover" data-bs-dismiss="modal"><a class="text-reset text-decoration-none" href="/admin_finalize">Back</a></span>
+                    <button type="submit" class="badge bg-light text-dark border border-dark badge-hover">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </form>
+  </div>
+  
+  <!-- Discard confirmation -->
+  <div class="modal fade mt-5" id="bulk-discard-modal" aria-labelledby="editModalLabel" aria-hidden="true" tabindex="-1">
+    <form method="POST" class="d-flex justify-content-center">
+        {% csrf_token %}
+        <input type="hidden" class="bulk-confirm-input" name='bulk-discard-user-id' id='bulk-discard-user-id' value=''>
+        <div class="modal-dialog position-absolute bottom-50">
+          <div class="modal-content rounded-1">
+            <div class="modal-header">
+              <h6 class="modal-title fw-bold" id="editModalLabel"><span class="badge bg-warning-subtle border border-warning-subtle text-warning-emphasis"><i class="fa-solid fa-triangle-exclamation me-2"></i>Confirm change</h6>
+                <span class="me-1 text-reset text-decoration-none" data-bs-dismiss="modal">
+                  <a class="btn-close" href="/admin_finalize"></a>
+                </span>
+            </div>
+              <div class="modal-body mx-auto text-center">
+                <p class="fs-6 mb-2 text-center fw-bold"></i>Discard lesson(s)?</p>
+                <i class="fa-solid fa-trash fs-3 text-secondary mb-3"></i>
+                <div class="text-dark admin-stats" id="activate-users-master-div">
+                    {{ finalize_form.as_table }}
+                </div>
+              </div>
+              <div class="modal-footer">
+                  <span role="button" class="badge bg-secondary badge-hover" data-bs-dismiss="modal"><a class="text-reset text-decoration-none" href="/admin_finalize">Back</a></span>
+                  <button type="submit" class="badge bg-light text-dark border border-dark badge-hover">Save changes</button>
+              </div>
+            </div>
+        </div>
+    </form>
+  </div>
+
+{%endblock%}

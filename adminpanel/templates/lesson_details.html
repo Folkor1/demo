@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'adminpanel/css/adminpanel.css' %}">
+  <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+{% endblock %}
+
+{% block content %}
+
+<!-- Page header -->
+<div class="container mt-4" style="margin-left: -250px;">
+  <div>
+    <div>
+      <i style="color: #31708F" class="fa-solid fa-clock-rotate-left fs-3"></i>
+      <span class="fs-5 text-secondary">Archived lesson details</span>
+    </div>
+      
+    <!-- Lesson info card -->
+    <div class="d-flex justify-content-start">
+      <div class="card mt-5 text-center me-2" style="width: 18rem;">
+        <div class="card-body admin-stats justify-content-center">
+          <div>
+            <span class="card-text"><span class="far fa-calendar-alt me-2"></span>{{ details_date|date:"j F Y" }}&nbsp; <i class="fa-regular fa-clock"></i> {{ details_time|time:"h:i a" }}</span>
+          </div>
+          <div class="mt-4">
+            <span class="text-secondary small">Lesson:</span> {{ details_lesson }} {{ details_lesson_type }}
+          </div>
+          <div class="mt-2">
+            <span class="text-secondary small">Student:</span> {{ details_student.first_name }} {{ details_student.last_name }}
+          </div>
+          <div class="mt-2">
+            <span class="text-secondary small">Username:</span><span style="background-color: #E8F5E9" class="admin-stats ms-1 px-1 rounded-1"><span class="text-success">{{ details_student }}</span></span>
+          </div>
+          <div class="mt-4">
+            <span class="text-secondary">
+              {% if details_confirmed == 'Pending' %}
+                <i class="fa-regular fa-clock text-warning"></i>
+                <span class="small text-secondary"> Pending</span>
+              {% elif details_confirmed == 'Confirmed' %} 
+                <i class="fa-regular fa-circle-check text-success"></i>
+                <span class="small text-secondary"> Confirmed</span>
+              {% else %}
+                <i class="fa-regular fa-circle-xmark text-danger"></i>
+                <span class="small text-secondary"> Cancelled</span>
+              {% endif %}
+            </span>
+            <i class="bi bi-dot"></i>
+            <span class="text-secondary">
+              {% if details_finalized == 'Finalized' %}
+                <i class="fa-solid fa-check"></i>
+                <span class="small text-secondary">Finalized</span> 
+              {% else %}
+                <i class="fa-solid fa-trash text-secondary"></i>
+                <span class="small text-secondary"> Discarded</span>
+              {% endif %}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timeline card -->
+      <div class="card mt-5 swiper-container" style="display: none">
+        <div class="swiper-wrapper">
+          {% for i in details_notes %}
+            {% if 'book_Off' in i or 'book_Onl' in i %}
+              <div class="swiper-slide">
+                <p class="diplome text-center">
+                  {{ details_date_booked|date:"d F Y" }}
+                  <br>
+                  {{ details_date_booked|time:"g:i a" }}
+                </p>
+                <span class="point"></span>
+                <p class="description text-center">
+                  Booked
+                  <br>
+                  <span class=" text-secondary small">
+                    {{ details_lesson }}
+                    <br>
+                    {{ i.1 }}
+                    <br>
+                    {{ i.2 }}
+                  </span>
+                </p>
+              </div>
+            {% elif '.m.' in i.2 %}
+              <div class="swiper-slide">
+                <p class="diplome text-center">
+                  {{ i.0 }}
+                  <br>
+                  {{ i.1 }}
+                </p>
+                <span class="point"></span>
+                <p class="description text-center">
+                  Date changed
+                  <br>
+                  <span class=" text-secondary small">
+                    {{ i.2 }}
+                  </span>
+                </p>
+              </div>
+            {% elif 'Online' in i or 'Offline' in i %}
+              <div class="swiper-slide">
+                <p class="diplome text-center">
+                  {{ i.0 }}
+                  <br>
+                  {{ i.1 }}
+                </p>
+                <span class="point"></span>
+                <p class="description text-center">
+                  Type changed
+                  <br>
+                  <span class="text-secondary small">
+                    {% if 'Online' in i %}
+                      Offline <i class="fa-solid fa-arrow-right-long"></i> Online
+                    {% else %}
+                      Online <i class="fa-solid fa-arrow-right-long"></i> Offline
+                    {% endif %}
+                  </span>
+                </p>
+              </div>
+            {% elif 'Confirmed' in i or 'Pending' in i or 'Cancelled' in i %}
+              <div class="swiper-slide">
+                <p class="diplome text-center">
+                  {{ i.0 }}
+                  <br>
+                  {{ i.1 }}
+                </p>
+                <span class="point"></span>
+                <p class="description text-center">
+                  {% if 'Confirmed' in i %}
+                    <i class="fa-regular fa-circle-check text-success"></i> <span class="text-secondary">Confirmed
+                  {% elif 'Pending' in i %}
+                    <i class="fa-regular fa-clock text-warning"></i> <span class="text-secondary">To pending</span>
+                  {% elif 'Cancelled' in i %}
+                    <i class="fa-regular fa-circle-xmark text-danger"></i> <span class="text-secondary">Cancelled</span>
+                  {% endif %}
+                </p>
+              </div>
+            {% elif 'Finalized' in i %}
+              <div class="swiper-slide">
+                <p class="diplome text-center">
+                  {{ details_date|date:"d F Y" }}
+                  <br>
+                  {{ details_time|time:"g:i a" }}
+                </p>
+                <span class="point"></span>
+                <p class="description text-center">
+                  <i class="fa-solid fa-graduation-cap"></i> Lesson
+                </p>
+              </div>
+            {% endif %}
+            {% if 'Finalized' in i or 'Discarded' in i %}
+              <div class="swiper-slide">
+                <p class="diplome text-center">
+                  {{ i.0 }}
+                  <br>
+                  {{ i.1 }}
+                </p>
+                <span class="point"></span>
+                <p class="description text-center">
+                  {% if 'Finalized' in i %}
+                    Finalized
+                  {% elif 'Discarded' in i %}
+                    Discarded
+                  {% endif %}
+                  <br>
+                  <span class="small text-secondary">by</span>
+                  <br>
+                  <span style="background-color: #E8F5E9" class="admin-stats px-1 rounded-1"><span class="text-success fw-normal">admin</span></span>
+                </p>
+              </div>
+            {% endif %}
+          {% endfor %}
+          <div class="swiper-slide">
+            <p class="diplome text-center">
+            </p>
+            <span class="point"></span>
+            <p class="description text-center">
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mt-2 admin-stats text-center px-3" style="width: 18rem; height: 17rem;">
+      <div class="text-secondary py-3">
+        <i class="fa-solid fa-message"></i> Admin notes
+      </div>
+      <div class="small overflow-auto bg-light" id="comms-box">
+        {{ details_comms|linebreaks }}
+      </div>
+      <div class="small position-absolute bottom-0">
+        <form method="POST">
+          {% csrf_token %}
+          {{ details_notes_form }}
+          <br>
+          <button type="submit" class="border-0 my-2 me-1 bg-transparent" disabled id="notes_submit">Submit</button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Back button -->
+<div class="d-flex justify-content-center mt-2 mb-5">
+  <div class="btn text-center mt-5 back-button"><i class="fa-solid fa-arrow-left fa-fw"></i><a class="text-reset text-decoration-none h6 back-button" href="{% url 'adminpanel:admin_archive' %}">Back to Archive</a></div>
+</div>
+
+{%endblock%}

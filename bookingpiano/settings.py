@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'home',
     'about',
+    'booking',
+    'adminpanel',
     'django_filters',
     'cloudinary',
     'crispy_forms',

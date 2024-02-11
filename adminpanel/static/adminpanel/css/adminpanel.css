@@ -1,0 +1,124 @@
+/* ---- Timeline ---- */
+.swiper-wrapper {
+	margin: 100px 0 100px 50px;
+	background: #31708F;
+	min-width: fit-content;
+	width: 50% !important;
+	height: 3px !important;
+}
+
+.swiper-wrapper::before,
+.swiper-wrapper::after {
+	content: "";
+	position: absolute;
+	top: -8px;
+	display: block;
+	width: 0;
+	height: 0;
+  	border-radius: 10px;
+	border: 10px solid #31708F;
+}
+.swiper-wrapper::before {
+	left: -5px;
+}
+.swiper-wrapper::after {
+	right: -15px;
+	width: 0;
+	height: 0;
+  	border-radius: 10px;
+	border: 10px solid #31708F;
+}
+
+/* ---- Timeline elements ---- */
+.swiper-slide {
+	position: relative;
+	display: inline-block;
+	width: 130px;
+	font: bold 14px arial;
+  	height: 50px;
+}
+
+.swiper-slide .diplome {
+  position: absolute;
+  top: -40px;
+  left: 55%;
+  width: 100%;
+  font-size: 11px;
+}
+
+.swiper-slide .description {
+	position: absolute;
+	top: 25px;
+	left: 65%;
+	width: 80%;
+	font-size: 12px;
+	line-height: 16px;
+  }
+
+.swiper-slide .point {
+	content: "";
+	top: -4px;
+	left: 100%;
+	display: block;
+	width: 12px;
+	height: 12px;
+	border: 4px solid #31708F;
+	border-radius: 10px;
+	background: #fff;
+  	position: absolute;
+}
+
+.swiper-container {
+  width: 900px;
+  overflow: hidden;
+  padding-right: 8%;
+}
+
+.finalize-form {
+	width: 300px;
+	height: 45px;
+	resize: none;
+}
+
+.finalize-form:focus {
+	height: 60px;
+}
+
+.notes-form {
+	width: 250px;
+	height: 50px;
+	resize: none;
+}
+
+#comms-box {
+	height: 100px;
+	font-size: 12px;
+}
+
+.submit-btn {
+	color: #31708F;
+	border-bottom: 2px solid transparent !important;
+}
+
+.submit-btn:hover {
+	color: #193d50;
+	font-weight: bold;
+	border-bottom: 2px solid #193d50 !important;
+}
+
+#notes_submit:disabled {
+	border-bottom: 2px solid transparent !important;
+}
+
+#comms-box::-webkit-scrollbar {
+	width: 8px;
+  }
+  
+  #comms-box::-webkit-scrollbar-track {
+	border-radius: 0;
+	background: #ffffff;
+  }
+  
+  #comms-box::-webkit-scrollbar-thumb {
+	background: #757575;
+  }

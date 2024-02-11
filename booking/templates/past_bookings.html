@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+
+   <!-- My past bookings -->
+   <div class="mt-5 row row-cols-1 d-flex justify-content-center">
+        <div class="text-center">
+            <p class="h3 mt-5 text-center">
+                {% if bookings_list %} My completed lessons: {% else %} You currently don't have completed lessons. {% endif %}
+            </p>
+        </div>
+    </div>
+    <div class="d-flex flex-wrap mt-4 row row-cols-3 justify-content-center" id="cards-wrap">   
+            {% for past in bookings_list %}
+                <div class="card text-center m-2" id="cards">
+                    <p class="card-body align-middle mb-0" id="past-book">{{ past.lesson }} <br> {{ past.lesson_type }} <br> <strong>{{ past.date }}</strong> <br> {{ past.time }}</p>
+                    <span name="status" class="badge bg-success-subtle text-success-emphasis mb-3 admin-stats">Placeholder</span>
+                </div>
+            {% endfor %}
+    </div>
+        <div class="pagination d-flex justify-content-center mt-5">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a class="fw-bold text-dark text-decoration-none small" href="?page=1">&laquo; First</a>
+                    <a class="fw-bold text-dark text-decoration-none small" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                {% endif %}
+        
+                {% if page_obj.paginator.num_pages > 1 %}
+                <span class="current small">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
+                {% endif %}
+        
+                {% if page_obj.has_next %}
+                    <a class="fw-bold text-dark text-decoration-none small" href="?page={{ page_obj.next_page_number }}">Next</a>
+                    <a class="fw-bold text-dark text-decoration-none small" href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+
+    <div class="d-flex justify-content-center mt-5 mb-5">
+        <div class="btn text-center mt-5 back-button"><i class="fa-solid fa-arrow-left fa-fw"></i><a class="text-reset text-decoration-none h6 back-button"  href="{% url 'manage_bookings:manage_bookings' %}">Back to Manage Bookings</a></div>
+    </div>
+
+    {% else %}
+
+    <!-- Sign up or login message -->
+    <p class="h3 mt-5 text-center">
+        Please <a class="text-info text-decoration-none" href="{% url 'account_signup' %}"> Sign Up</a> 
+        or <a class="text-info text-decoration-none" href="{% url 'account_login' %}">Login</a> to view your bookings
+    </p>
+
+    {% endif %}
+
+{%endblock%}

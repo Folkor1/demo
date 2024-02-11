@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+
+    <!-- Cancel lesson confirmation message -->
+    <div class="modal fade" id="cancel-lesson" aria-labelledby="editModalLabel" aria-hidden="true">
+        <form method="POST" class="d-flex justify-content-center">
+            {% csrf_token %}
+            <input type='hidden'>
+                <div class="modal-dialog position-absolute bottom-50">
+                    <div class="modal-content rounded-1">
+                        <div class="modal-header">
+                            <h6 class="modal-title fw-bold" id="editModalLabel"><span class="badge bg-warning-subtle border border-warning-subtle text-warning-emphasis"><i class="fa-solid fa-triangle-exclamation me-2"></i>Confirm change</h6>
+                            <span class="me-1 text-reset text-decoration-none" data-bs-dismiss="modal"><a class="btn-close" href="{% url 'manage_bookings:manage_bookings' %}"></a></span>
+                        </div>
+                        <div class="modal-body mx-auto pt-0">
+                            <p id="cancel-lesson-msg" class="lh-base mt-2 fs-6 mb-0 text-center">Are you sure you want to cancel the lesson?<br><strong>{{ cancel_lesson }} {{ cancel_lesson_type }} <i class="bi bi-at p-0 w-auto fw-bold" id="at-icon"></i> {{ cancel_date }} - {{ cancel_time }}</strong></p>
+                        </div>
+                        <div class="modal-footer">
+                            <span class="badge bg-secondary badge-hover" data-bs-dismiss="modal"><a class="text-reset text-decoration-none" href="{% url 'manage_bookings:manage_bookings' %}">Back</a></span>
+                            <button type="submit" class="badge bg-light text-dark border border-dark badge-hover" id="edit-lesson-type-confirm"><a class="text-reset text-decoration-none">Save changes</a></button>
+                        </div>
+                    </div>
+                </div>
+        </form>
+    </div>
+
+    {% else %}
+
+    <!-- Sign up or login message -->
+    <p class="h3 mt-5 text-center">
+        Please <a class="text-info text-decoration-none" href="{% url 'account_signup' %}"> Sign Up</a> 
+        or <a class="text-info text-decoration-none" href="{% url 'account_login' %}">Login</a> to view your bookings
+    </p>
+
+    {% endif %}
+
+{%endblock%}

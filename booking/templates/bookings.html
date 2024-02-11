@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<!-- Select and book a lesson  -->
+
+    {% if user.is_authenticated %}
+
+        <div class="container row mt-5" id="select-lesson">
+            <div id="selection">
+                <div>
+
+                    <!-- Select piano or theory  -->
+                    <div class="row d-flex justify-content-center" id="piano-theory">
+                        <p class="h3 text-center">Select a lesson</p>
+                        <div class="w-auto mt-3">
+                            <button type="button" class="bg-light text-dark border border-dark badge-hover lesson-button fw-bold" id="piano-btn">Piano</button>
+                        </div>
+                        <div class="w-auto mt-3">
+                            <button type="button" class="bg-light text-dark border border-dark badge-hover lesson-button fw-bold" id="theory-btn">Theory</button>
+                        </div>
+                    </div>
+
+                    <!-- Select online or offline  -->
+                    <div id="online-offline">
+                        <p class="h3 text-center d-none" id="select-lesson-type">Select lesson type</p>
+                        <div class="row justify-content-center" id="select-date-div">
+                            <p class="h3 text-center d-none" id="select-date">Select date <a class="trigger"><i class="bi bi-info-circle text-warning trigger" id="info-icon"></i></a></p>
+                            <p class="h3 text-center d-none" id="select-time">Select time</p>
+                            <div class="row d-flex justify-content-center d-none" id="book-for">
+                                 Booking for&nbsp;
+                                <span class="p-0 w-auto fw-bold" id="piano-or-theory"></span>&nbsp;
+                                <span class="p-0 w-auto fw-bold" id="online-or-offline"></span>&nbsp;
+                                <i class="bi bi-at p-0 w-auto fw-bold d-none" id="at-icon"></i>&nbsp;
+                                <span class="p-0 w-auto fw-bold d-none" id="booking-for-date"></span>
+                                <i class="fs-1 mt-2 mb-0 bi bi-exclamation-triangle color-gold text-center all-times-booked d-none"></i>
+                                <p class="fs-6 fw-bold mb-0 text-center all-times-booked d-none">Fully booked for this day.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="row d-flex justify-content-center d-none" id="oo-buttons">
+                            <div class="w-auto mt-3">
+                                <button type="button" class="bg-light text-dark border border-dark badge-hover lesson-button fw-bold" id="online-btn">Online</button>
+                            </div>
+                            <div class="w-auto mt-3">
+                                <button type="button" class="bg-light text-dark border border-dark badge-hover lesson-button fw-bold" id="offline-btn">Offline</button>
+                            </div>
+
+                            <!-- Back to lesson selection  -->
+                            <div class="d-flex justify-content-center">
+                                <button type="button" class="btn text-center mt-5 back-button" id="back-lesson"><i class="fa-solid fa-arrow-left fa-fw"></i>Back to lesson selection</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Select date  -->
+                    <div id="calendar" class="d-none">
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-3 mt-3 d-flex justify-content-center">
+                                <div id="date" class="border border-dark bg-light">
+                                    <div id="datepicker">
+                                    </div>
+                                    <input type="hidden" id="my_hidden_input">
+                                </div>
+                            </div>
+
+                            <!-- Back to lesson type selection  -->
+                            <div class="d-flex justify-content-center">
+                                <button type="button" class="btn text-center mt-5 back-button" id="back-lesson-type"><i class="fa-solid fa-arrow-left fa-fw"></i>Back to lesson type selection</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Select time  -->
+                    <div id="time-picker" class="d-flex justify-content-center mt-4 d-none">
+                        <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+
+                            <div hidden>
+                                {% for current in bookings_list %}
+                                    {% if current.status == True %}
+    
+                                        <p class="hide-time">{{ current.date }} {{ current.time }}</p>
+                                    
+                                    {% endif %}   
+                                {% endfor %}
+                            </div>
+
+                            <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off">
+                            <label class="btn btn-outline-dark bg-light rounded-1 fw-bold time-btns" for="btnradio1" id="10 a.m.">10:00</label>
+                          
+                            <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+                            <label class="btn btn-outline-dark bg-light rounded-1 fw-bold time-btns" for="btnradio2" id="11 a.m.">11:00</label>
+                          
+                            <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
+                            <label class="btn btn-outline-dark bg-light rounded-1 fw-bold time-btns" for="btnradio3" id="noon">12:00</label>
+                            
+                            <input type="radio" class="btn-check" name="btnradio" id="btnradio4" autocomplete="off">
+                            <label class="btn btn-outline-dark bg-light rounded-1 fw-bold time-btns" for="btnradio4" id="2 p.m.">14:00</label>
+
+                            <input type="radio" class="btn-check" name="btnradio" id="btnradio5" autocomplete="off">
+                            <label class="btn btn-outline-dark bg-light rounded-1 fw-bold time-btns" for="btnradio5" id="3 p.m.">15:00</label>
+
+                            <input type="radio" class="btn-check" name="btnradio" id="btnradio6" autocomplete="off">
+                            <label class="btn btn-outline-dark bg-light rounded-1 fw-bold time-btns time-16" for="btnradio6" id="4 p.m.">16:00</label>
+
+                            <input type="radio" class="btn-check" name="btnradio" id="btnradio7" autocomplete="off">
+                            <label class="btn btn-outline-dark bg-light rounded-1 fw-bold d-none time-btns time-17" for="btnradio7" id="5 p.m.">17:00</label>
+                          </div>
+                    </div>
+
+                    <!-- Confirm booking button -->
+                    <div class="mt-4 d-flex justify-content-center d-none" id="book-div">
+                        <button type="button" class="badge bg-light text-dark border border-dark badge-hover fs-6 px-5 py-3 rounded-1" id="book-confirm" data-bs-toggle="modal" data-bs-target="#confirm-message">Book</button>
+                    </div>
+
+                    <!-- Back to date selection -->
+                    <div class="d-flex justify-content-center">
+                        <button type="button" class="btn text-center mt-5 back-button d-none" id="back-select-date"><i class="fa-solid fa-arrow-left fa-fw"></i>Back to date selection</button>
+                    </div>
+                </div>
+
+                <!-- Book confirmation -->
+                <div class="modal fade" id="confirm-message" aria-labelledby="bookModalLabel" aria-hidden="true" tabindex="-1">
+                    <form method="POST" class="d-flex justify-content-center">
+                        {% csrf_token %}
+                        <input type='hidden' name='lesson_inp' id='lesson_inp' value=''>
+                        <input type='hidden' name='lesson_type_inp' id='lesson_type_inp' value=''>
+                        <input type='hidden' name='date_inp' id='date_inp' value=''>
+                        <input type='hidden' name='time_inp' id='time_inp' value=''>
+                            <div class="modal-dialog position-absolute bottom-50">
+                                <div class="modal-content rounded-1">
+                                    <div class="modal-header">
+                                        <h6 class="modal-title fw-bold" id="bookModalLabel"><span class="badge bg-warning-subtle border border-warning-subtle text-warning-emphasis"><i class="fa-solid fa-triangle-exclamation me-2"></i>Confirm booking</h6>
+                                        <button type="button" class="btn-close fs-6" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p class="fs-6 mb-2 text-center">This is booking for:</p>
+                                        <div class="mx-auto text-center mb-2">
+                                            <i class="fa-solid fa-graduation-cap fs-6"></i>
+                                            <span class="fs-6" id="lesson-confirmation"></span>
+                                            <span class="fs-6" id="lesson-type-confirmation"></span>
+                                        </div>
+                                        <div class="mx-auto text-center">
+                                            <i class="fa-regular fa-calendar-days fs-6"><span class="fs-6 p-0 me-2 ms-1" id="date-confirmation"></span></i>
+                                            <i class="fa-regular fa-clock fs-6"><span class="fs-6 p-0 ms-1" id="time-confirmation"></span></i>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <span role="button" class="badge bg-secondary badge-hover" data-bs-dismiss="modal">Back</span>
+                                        <button type="submit" class="badge bg-light text-dark border border-dark badge-hover pe-3 ps-3" id="confirm">Book lesson</button>
+                                    </div>
+                                </div>
+                            </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- My upcoming bookings  -->
+            <div class="col-3" id="manage-bookings-side">
+                <div class="text-center">
+                    <p class="text-center h5">
+                        {% if upcoming_lessons %} My upcoming bookings: {% else %} You currently don't have upcoming lessons. {% endif %}
+                    </p>
+                    <div class="mt-4">
+
+                        {% for current in upcoming_lessons %}
+ 
+                            <p id="upc-book">
+                                {% if current.confirmed == 'Pending' %} 
+                                    <i class="fa-regular fa-clock text-warning"></i> 
+                                {% elif current.confirmed == 'Confirmed' %} 
+                                    <i class="fa-regular fa-circle-check text-success"></i> 
+                                {% else %} 
+                                    <i class="fa-regular fa-circle-xmark text-danger"></i> 
+                                {% endif %}
+                                    {{ current.lesson }} {{ current.lesson_type }} <i class="bi bi-at p-0 w-auto fw-bold" id="at-icon"></i> {{ current.date }} - {{ current.time }}</p>
+                            
+                        {% endfor %}
+
+                    </div>
+                    <div class="badge bg-light text-dark border border-dark badge-hover ps-5 pe-5" id="manage-bookings">
+                        <a class="text-reset text-decoration-none"  href="{% url 'manage_bookings:manage_bookings' %}">Manage bookings</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pop-up on hover div -->
+        <div id="pop-up">
+            <p>
+                Lessons can be booked up to 2 weeks in advance<br><br>
+                Fully booked days, weekends and holidays are grayed-out
+           </p>
+         </div>
+
+    <!-- Contacts  -->
+    <div id="contacts">
+        <p id="contacts-font">CONTACTS</p>
+        <p>
+            32 Chapel Street <br>
+            Cork <br>
+            T12P9033 <br>
+            Phone: +353 085 87654321 <br>
+            E-mail: piano.email@school.com
+        </p>
+    </div>
+
+    {% else %}
+
+        <!-- Sign up or login message -->
+        <p class="h3 mt-5 text-center">
+            Please <a class="text-info text-decoration-none" href="{% url 'account_signup' %}"> Sign Up</a> 
+            or <a class="text-info text-decoration-none" href="{% url 'account_login' %}">Login</a> in order to make a reservation
+        </p>    
+
+    {% endif %}
+
+{%endblock%}

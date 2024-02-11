@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+
+    <!-- Edit date and time -->
+    <div class="mt-5 row row-cols-1 d-flex justify-content-center">
+        <div class="text-center" id="edit-date-time">
+            <p class="h3 mt-5 text-center">Edit date and time</p>
+            <div class="mt-2">
+                <div class="row d-flex justify-content-center" id="book-for">
+                   <span class="p-0 w-auto fw-bold" id="piano-or-theory">{{ edit_date_lesson }}</span>&nbsp;
+                   <span class="p-0 w-auto fw-bold" id="online-or-offline">{{ edit_date_lesson_type }}</span>&nbsp;
+                   <i class="bi bi-at p-0 w-auto fw-bold d-none" id="at-icon"></i>&nbsp;
+                   <span class="p-0 w-auto fw-bold d-none" id="booking-for-date"></span>
+                   <i class="fs-1 mt-2 mb-0 bi bi-exclamation-triangle color-gold text-center all-times-booked d-none"></i>
+                   <p class="fs-6 fw-bold mb-0 text-center all-times-booked d-none">Fully booked for this day.</p>
+               </div>
+
+                <!-- Select date  -->
+                <div id="calendar">
+                    <div class="row d-flex justify-content-center">
+                        <div class="col-3 mt-3 d-flex justify-content-center">
+                            <div id="date" class="border border-dark">
+                                <div id="datepicker">
+                                </div>
+                                <input type="hidden" id="my_hidden_input">
+                            </div>
+                        </div>
+
+                        <!-- Back to lesson type selection  -->
+                        <div class="d-flex justify-content-center">
+                            <div class="btn text-center mt-5 back-button" id="edit-back-lesson-type"><a class="text-reset text-decoration-none" href="{% url 'manage_bookings:manage_bookings' %}"><i class="fa-solid fa-arrow-left fa-fw"></i>Back to Manage booking</a></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Select time  -->
+                <div id="time-picker" class="d-flex justify-content-center mt-4 d-none">
+                    <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+
+                        <div hidden>
+                            {% for current in date_and_time %}
+
+                                    <p class="hide-time">{{ current.date }} {{ current.time }}</p>
+                                
+                            {% endfor %}
+                        </div>
+
+                        <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" >
+                        <label class="btn btn-outline-dark bg-light rounded-1 fw-bold time-btns" for="btnradio1" id="10 a.m.">10:00</label>
+                        
+                        <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+                        <label class="btn btn-outline-dark bg-light rounded-1 fw-bold time-btns" for="btnradio2" id="11 a.m.">11:00</label>
+                        
+                        <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
+                        <label class="btn btn-outline-dark bg-light rounded-1 fw-bold time-btns" for="btnradio3" id="noon">12:00</label>
+                        
+                        <input type="radio" class="btn-check" name="btnradio" id="btnradio4" autocomplete="off">
+                        <label class="btn btn-outline-dark bg-light rounded-1 fw-bold time-btns" for="btnradio4" id="2 p.m.">14:00</label>
+
+                        <input type="radio" class="btn-check" name="btnradio" id="btnradio5" autocomplete="off">
+                        <label class="btn btn-outline-dark bg-light rounded-1 fw-bold time-btns" for="btnradio5" id="3 p.m.">15:00</label>
+
+                        <input type="radio" class="btn-check" name="btnradio" id="btnradio6" autocomplete="off">
+                        <label class="btn btn-outline-dark bg-light rounded-1 fw-bold time-btns time-16" for="btnradio6" id="4 p.m.">16:00</label>
+
+                        <input type="radio" class="btn-check" name="btnradio" id="btnradio7" autocomplete="off">
+                        <label class="btn btn-outline-dark bg-light rounded-1 fw-bold time-btns d-none time-17" for="btnradio7" id="5 p.m.">17:00</label>
+                    </div>
+                </div>
+
+                <!-- Confirm booking button -->
+                <div class="mt-4 d-flex justify-content-center d-none" id="book-div">
+                    <button type="button" class="badge bg-light text-dark border border-dark badge-hover fs-6 px-5 py-3 rounded-1" id="edit-book-confirm" data-bs-toggle="modal" data-bs-target="#edit-date-form">Change</button>
+                </div>
+
+                <!-- Back to date selection -->
+                <div class="d-flex justify-content-center">
+                    <button type="button" class="btn text-center mt-5 back-button d-none" id="back-select-date"><i class="fa-solid fa-arrow-left fa-fw"></i>Back to date selection</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit date confirmation message -->
+        <div class="modal fade" id="edit-date-form" aria-labelledby="editModalLabel" aria-hidden="true" tabindex="-1">
+            <form method="POST" class="d-flex justify-content-center">
+                {% csrf_token %}
+                <input type='hidden' name='edit_date_inp' id='edit_date_inp' value=''>
+                <input type='hidden' name='edit_time_inp' id='edit_time_inp' value=''>
+                <div class="modal-dialog position-absolute bottom-50">
+                    <div class="modal-content rounded-1">
+                        <div class="modal-header">
+                            <h6 class="modal-title fw-bold" id="editModalLabel"><span class="badge bg-warning-subtle border border-warning-subtle text-warning-emphasis"><i class="fa-solid fa-triangle-exclamation me-2"></i>Confirm change</h6>
+                            <button type="button" class="btn-close fs-6" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body mx-auto text-center">
+                            <p class="fs-6 mb-2 text-center">Are you sure you want to change date and time as follows?</p>
+                            <i class="fa-regular fa-calendar-days fs-6"><span class="fs-6 p-0 me-2 ms-1" id="edit-date-date"></span></i>
+                            <i class="fa-regular fa-clock fs-6"><span class="fs-6 p-0 ms-1" id="edit-time"></span></i>
+                        </div>
+                        <div class="modal-footer">
+                            <span role="button" class="badge bg-secondary badge-hover" data-bs-dismiss="modal">Back</span>
+                            <button type="submit" class="badge bg-light text-dark border border-dark badge-hover">Save changes</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% else %}
+
+    <!-- Sign up or login message -->
+    <p class="h3 mt-5 text-center">
+        Please <a class="text-info text-decoration-none" href="{% url 'account_signup' %}"> Sign Up</a> 
+        or <a class="text-info text-decoration-none" href="{% url 'account_login' %}">Login</a> to view your bookings
+    </p>
+
+    {% endif %}
+
+{%endblock%}

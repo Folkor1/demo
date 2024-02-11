@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<!-- Page header -->
+<div class="container ms-5 mt-4 position-absolute start-0">
+    <div class="row row-cols-auto ms-3">
+      <div class="col">
+        <i class="fa-solid fa-list-check fs-1 text-success"></i>
+      </div>
+      <div class="col fs-2 ps-0 text-secondary">
+        Review
+      </div>
+    </div>
+</div>
+
+<!-- Lessons table -->
+<div class="container-fluid justify-content-between table-responsive" id="user-table" style="display: none">
+
+  <form method="GET" name="admin-review-form" class="text-center dropdown badge ps-0 mb-2 float-start">
+    {{ bookings_filter.form.confirmed }}
+    {{ bookings_filter.form.lesson_type }}
+    {{ bookings_filter.form.date }}
+  </form>
+
+  <a href="/admin_review" class="badge btn bg-light text-dark rounded-2 badge-hover float-end btn-secondary text-decoration-none mt-3" id="review-clear-filters">Clear filters</a>
+
+  <table class="table table-hover">
+    <thead class="table-light">
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">
+          <div class="form-check pt-1">
+            <input class="form-check-input" type="checkbox" id="review-check-all-boxes">
+          </div>
+        </th>
+        <th scope="col" class="text-start">Lesson</th>
+        <th scope="col" class="text-start">Date & Time</th>
+        <th scope="col" class="text-start">Name</th>
+        <th scope="col" class="text-start">Status</th>
+      </tr>
+    </thead>
+
+    <form method="POST" class="d-inline" id="admin-status-submit-form">
+      {% csrf_token %}
+      <input type="hidden" name="admin-status-submit" id="admin-status-submit" value="">
+      <input type="hidden" name="admin-status-id" id="admin-status-id" value="">
+
+      {% for booking in bookings_filter.qs %}
+        <tbody>
+          <tr>
+            <th scope="row" class="get-value-by-js">{{ booking.id }}</th>
+            <th>
+              <div class="form-check mb-0">
+                <input class="form-check-input check" type="checkbox" id="{{ forloop.counter }}-selected">
+                  <input type="hidden" label="{{ booking.id }}" name="review-get-id-by-js">
+                  <input type="hidden" label="{{ booking.confirmed }}" name="review-get-status-by-js">
+              </div>
+            </th>
+            <td class="admin-stats">{{ booking.lesson }} {{ booking.lesson_type }} {% if booking.flagged %} <i class="bi bi-exclamation-triangle text-center fs-6" data-toggle="tooltip" data-placement="top" title="Duplicated time" style="color: #E65100"></i> {% endif %} </td>
+            <td>{{ booking.date|date:"j" }} {{ booking.date|date:"F" }} {{ booking.date|date:"Y" }} - {{ booking.time }}</td>
+            <td>{{ booking.student }} {% if booking.student.first_name or booking.student.last_name %} - {{ booking.student.first_name }} {{ booking.student.last_name }} {% endif %}</td>
+            <td class="admin-stats">
+              <select id="pp-{{ forloop.counter }}" label="admin-status-dd-{{ forloop.counter }}" name="{{ booking.id }}" class="badge {% if booking.confirmed == 'Pending' %} text-warning-emphasis bg-warning-subtle border-warning-subtle {% elif booking.confirmed == 'Confirmed' %} text-success-emphasis bg-success-subtle border-success-subtle {% else %} text-danger-emphasis bg-danger-subtle border-danger-subtle {% endif %} fw-bold admin-status mt-0 p-0">
+                <option>
+                  {% if booking.confirmed == 'Pending' %} Pending {% elif booking.confirmed == 'Confirmed' %} Confirmed {% else %} Cancelled {% endif %}
+                </option>
+                <option>
+                  {% if booking.confirmed == 'Pending' or booking.confirmed == 'Cancelled' %} Confirm {% else %} To pending {% endif %}
+                </option>
+                <option>
+                  {% if booking.confirmed == 'Pending' or booking.confirmed == 'Confirmed' %} Cancel {% else %} To pending {% endif %}
+                </option>
+              </select>
+                <button type="submit" id="admin-status-dd-{{ forloop.counter }}" class="badge bg-light text-dark border-0 bg-transparent py-1 px-2 d-none position-absolute" data-toggle="tooltip" data-placement="top" title="Save"><i class="fs-6 fa-regular fa-paper-plane"></i></button>
+            </td>
+          </tr>
+        </tbody>
+      {% endfor %}
+    </form>
+
+  </table>
+  <button class="badge btn bg-light text-dark rounded-2 badge-hover float-start btn-secondary text-decoration-none me-2" id="review-cancel-modal" tabindex="-1">Cancel</button>
+  <button class="badge btn bg-light text-dark rounded-2 badge-hover float-start btn-secondary text-decoration-none me-2" id="review-to-pending-modal" tabindex="-1">To pending</button>
+  <button class="badge btn bg-light text-dark rounded-2 badge-hover float-start btn-secondary text-decoration-none" id="review-confirm-modal" tabindex="-1">Confirm</button>
+</div>
+
+<!-- Back button -->
+<div class="d-flex justify-content-center mt-5 mb-5">
+  <div class="btn text-center mt-5 back-button" id="back-button-admin-users" style="display: none"><i class="fa-solid fa-arrow-left fa-fw"></i><a class="text-reset text-decoration-none h6 back-button" href="{% url 'adminpanel:admin_panel' %}">Back to Admin panel</a></div>
+</div>
+
+<!-- Spinner -->
+<div class="container text-center spinner-div">
+  <div class="spinner-border text-warning" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+  <br>
+  <p class="fw-bold mt-1">Loading...</p>
+</div>
+
+<!-- Confirm lessons confirmation -->
+<div class="modal fade" id="bulk-confirm-modal" aria-labelledby="editModalLabel" aria-hidden="true" tabindex="-1">
+  <form method="POST" class="d-flex justify-content-center">
+      {% csrf_token %}
+      <input type="hidden" class="bulk-confirm-input" name='bulk-confirm-user-id' id='bulk-confirm-user-id' value=''>
+      <div class="modal-dialog position-absolute bottom-50">
+          <div class="modal-content rounded-1">
+              <div class="modal-header">
+                  <h6 class="modal-title fw-bold" id="editModalLabel"><span class="badge bg-warning-subtle border border-warning-subtle text-warning-emphasis"><i class="fa-solid fa-triangle-exclamation me-2"></i>Confirm change</h6>
+                      <span class="me-1 text-reset text-decoration-none" data-bs-dismiss="modal"><a class="btn-close" href="/admin_review"></a></span>
+              </div>
+              <div class="modal-body mx-auto text-center">
+                  <p class="fs-6 mb-2 text-center"></i>Confirm lessons?</p>
+                  <div class="text-dark admin-stats" id="activate-users-master-div">
+
+                  </div>
+              </div>
+              <div class="modal-footer">
+                  <span role="button" class="badge bg-secondary badge-hover" data-bs-dismiss="modal"><a class="text-reset text-decoration-none" href="/admin_review">Back</a></span>
+                  <button type="submit" class="badge bg-light text-dark border border-dark badge-hover">Save changes</button>
+              </div>
+          </div>
+      </div>
+  </form>
+</div>
+
+<!-- To pending lessons confirmation -->
+<div class="modal fade" id="bulk-to-pending-modal" aria-labelledby="editModalLabel" aria-hidden="true" tabindex="-1">
+  <form method="POST" class="d-flex justify-content-center">
+      {% csrf_token %}
+      <input type="hidden" class="bulk-confirm-input" name='bulk-to-pending-user-id' id='bulk-to-pending-user-id' value=''>
+      <div class="modal-dialog position-absolute bottom-50">
+          <div class="modal-content rounded-1">
+              <div class="modal-header">
+                  <h6 class="modal-title fw-bold" id="editModalLabel"><span class="badge bg-warning-subtle border border-warning-subtle text-warning-emphasis"><i class="fa-solid fa-triangle-exclamation me-2"></i>Confirm change</h6>
+                      <span class="me-1 text-reset text-decoration-none" data-bs-dismiss="modal"><a class="btn-close" href="/admin_review"></a></span>
+              </div>
+              <div class="modal-body mx-auto text-center">
+                  <p class="fs-6 mb-2 text-center"></i>Set lesson(s) to pending?</p>
+                  <div class="text-dark admin-stats" id="activate-users-master-div">
+
+                  </div>
+              </div>
+              <div class="modal-footer">
+                  <span role="button" class="badge bg-secondary badge-hover" data-bs-dismiss="modal"><a class="text-reset text-decoration-none" href="/admin_review">Back</a></span>
+                  <button type="submit" class="badge bg-light text-dark border border-dark badge-hover">Save changes</button>
+              </div>
+          </div>
+      </div>
+  </form>
+</div>
+
+<!-- Cancel lessons confirmation -->
+<div class="modal fade" id="bulk-cancel-modal" aria-labelledby="editModalLabel" aria-hidden="true" tabindex="-1">
+  <form method="POST" class="d-flex justify-content-center">
+      {% csrf_token %}
+      <input type="hidden" class="bulk-confirm-input" name='bulk-cancel-user-id' id='bulk-cancel-user-id' value=''>
+      <div class="modal-dialog position-absolute bottom-50">
+        <div class="modal-content rounded-1">
+          <div class="modal-header">
+            <h6 class="modal-title fw-bold" id="editModalLabel"><span class="badge bg-warning-subtle border border-warning-subtle text-warning-emphasis"><i class="fa-solid fa-triangle-exclamation me-2"></i>Confirm change</h6>
+              <span class="me-1 text-reset text-decoration-none" data-bs-dismiss="modal">
+                <a class="btn-close" href="/admin_review"></a>
+              </span>
+          </div>
+            <div class="modal-body mx-auto text-center">
+              <p class="fs-6 mb-2 text-center"></i>Cancel lesson(s)?</p>
+              <div class="text-dark admin-stats" id="activate-users-master-div">
+
+              </div>
+            </div>
+            <div class="modal-footer">
+                <span role="button" class="badge bg-secondary badge-hover" data-bs-dismiss="modal"><a class="text-reset text-decoration-none" href="/admin_review">Back</a></span>
+                <button type="submit" class="badge bg-light text-dark border border-dark badge-hover">Save changes</button>
+            </div>
+          </div>
+      </div>
+  </form>
+</div>
+
+{%endblock%}

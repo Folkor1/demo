@@ -24,56 +24,12 @@ urlpatterns = [
     path('', include('booking.urls'), name='booking_urls'),
     path('accounts/', include('allauth.urls')),
     path('', include(
-        ('services.urls', 'services'),
-        namespace='services')
-        ),
-    path('', include(
-        ('adminpanel.urls', 'lesson_details'),
-        namespace='lesson_details')
-        ),
-    path('', include(
-        ('adminpanel.urls', 'admin_finalize'),
-        namespace='admin_finalize')
-        ),
-    path('', include(
-        ('adminpanel.urls', 'admin_review'),
-        namespace='admin_review')
-        ),
-    path('', include(
-        ('adminpanel.urls', 'admin_users'),
-        namespace='admin_users')
-        ),
-    path('', include(
-        ('adminpanel.urls', 'admin_panel'),
-        namespace='adminpanel')
-        ),
-    path('', include(
         ('home.urls', 'homepage'),
         namespace='homepage')
         ),
     path('', include(
         ('booking.urls', 'bookings'),
         namespace='bookings')
-        ),
-    path('', include(
-        ('booking.urls', 'cancel_booking'),
-        namespace='cancel_booking')
-        ),
-    path('', include(
-        ('booking.urls', 'edit_booking_date'),
-        namespace='edit_booking_date')
-        ),
-    path('', include(
-        ('booking.urls', 'edit_booking_type'),
-        namespace='edit_booking_type')
-        ),
-    path('', include(
-        ('booking.urls', 'manage_bookings'),
-        namespace='manage_bookings')
-        ),
-    path('', include(
-        ('booking.urls', 'past_bookings'),
-        namespace='past_bookings')
         ),
     path('', include(
         ('about.urls', 'about'),

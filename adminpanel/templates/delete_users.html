@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+    <!-- Inactivate users confirmation -->
+    <div class="modal fade" id="delete-users" aria-labelledby="editModalLabel" aria-hidden="true" tabindex="-1">
+        <form method="POST" class="d-flex justify-content-center">
+            {% csrf_token %}
+            <input type="hidden" class="hidden-ids-del" name='hidden-ids-del' id='user-id-del' value=''>
+            <div class="modal-dialog position-absolute bottom-50">
+                <div class="modal-content rounded-1">
+                    <div class="modal-header">
+                        <h6 class="modal-title fw-bold" id="editModalLabel"><span class="badge bg-warning-subtle border border-warning-subtle text-warning-emphasis"><i class="fa-solid fa-triangle-exclamation me-2"></i>Confirm change</h6>
+                            <span class="me-1 text-reset text-decoration-none" data-bs-dismiss="modal"><a class="btn-close" href="/admin_users"></a></span>
+                    </div>
+                    <div class="modal-body mx-auto text-center">
+                        <p class="text-danger"><i class="fa-regular fa-circle-xmark me-1"></i>Action can't be reverted.</p>
+                        <p class="fs-6 mb-2 text-center"></i>Delete the following user(s)?</p>
+                        <div class="text-dark admin-stats" id="delete-users-master-div">
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <span role="button" class="badge bg-secondary badge-hover" data-bs-dismiss="modal"><a class="text-reset text-decoration-none" href="/admin_users">Back</a></span>
+                        <button type="submit" class="badge bg-light text-dark border border-dark badge-hover">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+{%endblock%}

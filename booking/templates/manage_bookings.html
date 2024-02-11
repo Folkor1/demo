@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+
+    <!-- My upcoming bookings -->
+    <div class="mt-5 row row-cols-1 d-flex justify-content-center" id="manage-bookings-wrap">
+        <div class="text-center" id="manage-bookings-sub-wrap">
+            <p class="h4 mt-5 text-center upc-lessons">
+                {% if upcoming_lessons %} My upcoming bookings: {% else %} You currently don't have upcoming lessons. {% endif %}
+            </p>
+            <div class="mt-4">
+                {% for current in upcoming_lessons %}
+                    <div class="mb-2">
+                        <p class="btn-group me-1 my-auto" id="upc-manage-book">
+                            <span class="badge {% if current.confirmed == 'Pending' %} text-warning-emphasis bg-warning-subtle border-warning-subtle {% elif current.confirmed == 'Confirmed' %} text-success-emphasis bg-success-subtle {% else %} text-danger-emphasis bg-danger-subtle  {% endif %} border me-1">
+                                {% if current.confirmed == 'Pending' %} Pending {% elif current.confirmed == 'Confirmed' %} Confirmed {% else %} Cancelled {% endif %}
+                            </span>
+                            {{ current.lesson }} {{ current.lesson_type }}<i class="bi bi-at p-0 w-auto fw-bold" id="at-icon"></i> {{ current.date }} - {{ current.time }}</p>
+                        <button class="btn p-0 edit-toggle-button me-2" label="ed-{{ forloop.counter }}" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa-solid fa-pen-to-square fs-5 border-0"></i></button>
+                        <div class="d-inline d-none edit-toggle position-absolute" id="ed-{{ forloop.counter }}">
+                            <span class="badge bg-light text-dark border border-dark" id="change-date"><a class="text-reset text-decoration-none" href="/edit/{{ current.id }}">Change date</a></span>
+                            <span class="badge bg-light text-dark border border-dark" id="change-type" data-bs-target="#edit-lesson-type"><a class="text-reset text-decoration-none" href="/edit_type/{{ current.id }}">Change type</a></span>
+                            <span class="badge bg-light text-dark border border-dark" id="cancel" data-bs-target="#cancel-lesson"><a class="text-reset text-decoration-none" href="/cancel/{{ current.id }}">Cancel</a></span>
+                        </div>
+                    </div>
+                {% endfor %}
+
+            </div>
+            
+            <div class="badge bg-light text-dark border border-dark mt-2 ps-5 pe-5" id="manage"><a class="text-reset text-decoration-none" href="{% url 'past_bookings:past_bookings' %}">View my past bookings</a></div>
+        </div>
+    </div>
+
+    {% else %}
+
+    <!-- Sign up or login message -->
+    <p class="h3 mt-5 text-center">
+        Please <a class="text-info text-decoration-none" href="{% url 'account_signup' %}"> Sign Up</a> 
+        or <a class="text-info text-decoration-none" href="{% url 'account_login' %}">Login</a> to view your bookings
+    </p>
+
+    {% endif %}
+
+{%endblock%}

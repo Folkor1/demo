@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% load static %}
+{% load tags %}
+
+{% block content %}
+
+<!-- Page header -->
+<div class="container ms-5 mt-4 position-absolute start-0">
+  <div class="row row-cols-auto ms-3">
+    <div class="col">
+      <i class="fa-solid fa-box-archive fs-1 text-warning"></i>
+    </div>
+    <div class="col fs-2 ps-0 text-secondary">
+      Archive
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid justify-content-between text-center archive-offset d-none" id="archive-new-search-wrap">
+  <p class="fs-5">Search query:</p>
+  <span class="fs-6 admin-stats text-secondary" id="archive-search-username"></span>
+  <i class="fa-solid fa-angle-right d-none" id="arrow-1"></i>
+  <span class="fs-6 admin-stats text-secondary" id="archive-search-date"></span>
+  <i class="fa-solid fa-angle-right d-none" id="arrow-2"></i>
+  <span class="fs-6 admin-stats text-secondary" id="archive-search-confirmed"></span>
+  <br>
+  <a href="/admin_archive" class="badge text-dark border border-dark-subtle fw-bold bg-light badge-hover admin-filters mt-4 mb-5 text-center btn" id="archive-new-search">New search</a>
+  {% if 'date' in request.GET %}
+    {% if not bookings_past.qs %} 
+      <div class="fw-bold archive-offset">No results found.</div>
+    {% endif %}
+  {% endif %}
+</div>
+
+<div class="container-fluid justify-content-between" id="archive-user-table" style="display: none">
+
+  <!-- Admin past bookings -->
+  <div class="container-fluid row justify-content-between" id="archive-search-title" style="display: none">
+    <div class="text-center">
+      <p class="h3 text-center" id="completed-lessons-p">
+        Select search criteria
+      </p>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-center mt-1" id="archive-search-wrap">
+    <form method="GET" id="archive-search-form">
+      <div class="badge">
+        {{ bookings_past.form.student }}
+        {{ bookings_past.form.date }}
+        {{ bookings_past.form.finalized }}
+      </div>
+      <a href="/admin_archive" class="badge btn bg-light text-dark border-dark-subtle badge-hover px-2 rounded-1" id="admin-archive-clear">Clear filters</a>
+      <div class="text-center mt-4">
+        <i class="fa-solid fa-magnifying-glass fs-1 text-warning fa-beat-fade" style="--fa-animation-iteration-count: 2;"></i>
+      </div>
+      <div class="text-center">
+        <button id="archive_search" type="submit" class="badge text-dark border border-dark-subtle fw-bold bg-light badge-hover admin-filters mt-4 text-center btn">Search</button>
+      </div>
+    </form>
+  </div>
+  <div class="row row-cols-6 justify-content-center">
+    {% for booking in bookings_list %}
+      <div class="col-12 col-md-3 mb-3">
+        <div class="card shadow text-center">
+          <div class="card-header bg-white border-0 pb-0">
+              <span class="card-text small fw-bold"><span class="far fa-calendar-alt me-2"></span>{{ booking.date|date:"j" }} {{ booking.date|date:"F" }} {{ booking.date|date:"Y" }}&nbsp; <i class="fa-regular fa-clock"></i> {{ booking.time|time:"g:i a" }}</span>
+          </div>
+          <div class="card-body">
+            <span style="background-color: #E8F5E9" class="admin-stats ms-1 px-1 rounded-1"><span class="small text-success">{{ booking.student }}</span></span>
+            <br>
+            <span class="admin-stats ms-2"><span class="small fw-bold">{{ booking.lesson }} {{ booking.lesson_type }}</span></span>
+            <br>
+            <span class="admin-stats">
+              {% if booking.confirmed == 'Pending' %}
+                <i class="fa-regular fa-clock text-warning"></i>
+                <span class="small text-secondary"> Pending</span>
+              {% elif booking.confirmed == 'Confirmed' %} 
+                <i class="fa-regular fa-circle-check text-success"></i>
+                <span class="small text-secondary"> Confirmed</span>
+              {% else %}
+                <i class="fa-regular fa-circle-xmark text-danger"></i>
+                <span class="small text-secondary"> Cancelled</span>
+              {% endif %}
+              <i class="bi bi-dot"></i>
+              {% if booking.finalized == 'Finalized' %}
+                <i class="fa-solid fa-check"></i>
+                <span class="small text-secondary">Finalized</span> 
+              {% else %}
+                <i class="fa-solid fa-trash text-secondary"></i>
+                <span class="small text-secondary"> Discarded</span>
+              {% endif %}
+            </span>
+            <br>
+            <a href="/lesson_details/{{ booking.id }}" class="badge text-dark border border-dark-subtle fw-bold bg-light badge-hover admin-filters text-center btn mt-3">Details</a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+    <div class="pagination d-flex justify-content-center mt-3">
+      <span class="step-links">
+        {% if page_obj.has_previous %}
+        <a class="fw-bold text-dark text-decoration-none small" href="?{% param_replace page=1 %}">&laquo; First</a>
+        <a class="fw-bold text-dark text-decoration-none small" href="?{% param_replace page=page_obj.previous_page_number %}">Previous</a>
+        {% endif %}
+        
+        {% if page_obj.paginator.num_pages > 1 %}
+          <span class="current small">
+              Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+          </span>
+        {% endif %}
+
+        {% if page_obj.has_next %}
+        <a class="fw-bold text-dark text-decoration-none small" href="?{% param_replace page=page_obj.next_page_number %}">Next</a>
+        <a class="fw-bold text-dark text-decoration-none small" href="?{% param_replace page=paginator.num_pages %}">Last &raquo;</a>
+        {% endif %}
+      </span>
+    </div>
+</div>
+
+<!-- Back button -->
+<div class="d-flex justify-content-center mt-5 mb-5">
+  <div class="btn text-center mt-5 back-button" id="back-button-admin-users" style="display: none"><i class="fa-solid fa-arrow-left fa-fw"></i><a class="text-reset text-decoration-none back-button" href="{% url 'adminpanel:admin_panel' %}">Back to Admin panel</a></div>
+</div>
+
+<!-- Spinner -->
+<div class="container text-center spinner-div">
+  <div class="spinner-border text-warning" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+  <br>
+  <p class="fw-bold mt-1">Loading...</p>
+</div>
+
+{%endblock%}
