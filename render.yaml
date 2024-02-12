@@ -1,0 +1,20 @@
+databases:
+  - name: bookingpiano
+    databaseName: bookingpiano
+    user: bookingpiano
+
+services:
+  - type: web
+    name: bookingpiano
+    runtime: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn bookingpiano.wsgi:application"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: bookingpiano
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: WEB_CONCURRENCY
+        value: 4
