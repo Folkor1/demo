@@ -84,7 +84,6 @@ nvidia-nvtx-cu12==12.1.105
 oauthlib==3.2.2
 overrides==7.4.0
 packaging==23.2
-pandas==2.1.4
 pandocfilters==1.5.0
 parso==0.8.3
 pep8==1.7.1
