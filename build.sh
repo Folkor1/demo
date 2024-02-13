@@ -9,4 +9,6 @@ python manage.py migrate
 
 chmod a+x build.sh
 
+poetry add django
+
 poetry add gunicorn
