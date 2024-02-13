@@ -6,7 +6,7 @@ poetry install
 
 poetry add django
 poetry add dj_database_url
-poetry add allauth
+poetry add django-allauth
 
 python manage.py collectstatic --no-input
 python manage.py migrate
