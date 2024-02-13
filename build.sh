@@ -4,7 +4,7 @@ set -o errexit
 
 poetry install
 
-add django
+poetry add django
 
 python manage.py collectstatic --no-input
 python manage.py migrate
