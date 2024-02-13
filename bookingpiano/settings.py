@@ -58,7 +58,6 @@ INSTALLED_APPS = [
     'django_filters',
     'cloudinary',
     'crispy_forms',
-    'render.apps.RenderConfig',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
