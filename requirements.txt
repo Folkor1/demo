@@ -28,3 +28,5 @@ tzdata==2023.3
 unittest2==1.1.0
 urllib3==2.1.0
 gunicorn==19.7.1
+psycopg2==2.9.9
+psycopg2-binary==2.9.9
