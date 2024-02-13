@@ -8,6 +8,7 @@ poetry add django
 poetry add dj_database_url
 poetry add django-allauth
 poetry add django_filter
+poetry add cloudinary
 
 python manage.py collectstatic --no-input
 python manage.py migrate
