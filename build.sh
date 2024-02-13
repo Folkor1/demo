@@ -9,6 +9,7 @@ poetry add dj_database_url
 poetry add django-allauth
 poetry add django_filter
 poetry add cloudinary
+poetry add django-crispy-forms
 
 python manage.py collectstatic --no-input
 python manage.py migrate
