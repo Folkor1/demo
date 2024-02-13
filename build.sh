@@ -11,6 +11,7 @@ poetry add django_filter
 poetry add cloudinary
 poetry add django-crispy-forms
 poetry add psycopg2
+poetry add dj3-cloudinary-storage
 
 python manage.py collectstatic --no-input
 python manage.py migrate
