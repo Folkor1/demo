@@ -2,12 +2,12 @@
 name = "bookingpiano"
 version = "0.1.0"
 description = ""
-authors = ["demo"]
+authors = ["Your Name <you@example.com>"]
 readme = "README.md"
-packages = [{include = "bookingpiano"}]
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "3.10"
+pendulum = "^2.1"
 
 
 [build-system]
